@@ -2,11 +2,7 @@ from collections import Counter
 from typing import List
 import random
 
-
-
-
 Move = tuple[int, int]  # (rolledNumber, columnPlayed)
-
 
 # defines board state
 class Board:
