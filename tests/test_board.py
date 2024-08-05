@@ -1,6 +1,6 @@
 import pytest
 from board import Board
-from die import DeterministicDie
+from die import ChosenDie, DeterministicDie
 
 class TestColumnScore:
     def test_empty(self):
@@ -26,6 +26,26 @@ class TestColumnScore:
 
     def test_triple_three(self):
         assert Board.getColumnScore([3, 3, 3]) == 27
+
+
+class TestPlayerScores:
+    def test_empty(self):
+        board = Board()
+        assert board.getPlayerScores() == (0, 0)
+
+    def test_single_move(self):
+        board = Board(die=DeterministicDie())
+        board.makePlay(0) # Player A plays 1 in column 0
+        board.makePlay(0) # Player B plays 2 in column 0
+        assert board.getPlayerScores() == (1, 2)
+
+    def test_colliding_move(self):
+        board = Board(die=ChosenDie([1, 1, 2, 2, 3, 3]))
+        board.makePlay(0)
+        board.makePlay(0)
+        board.makePlay(0)
+        assert board.getPlayerScores() == (2, 1)
+
 
 class TestLegalColumns:
     def test_empty(self):

@@ -1,13 +1,25 @@
 import pytest
 
 from board import Board
-from die import DeterministicDie
+from die import ChosenDie, DeterministicDie
 
 class TestDie:
     def test_roll(self):
-        board = Board(die=DeterministicDie())
-        board.makePlay(0)
-        board.makePlay(1)
-        board.makePlay(2)
-        assert board.a_cols == [[1], [], [3]]
-        assert board.b_cols == [[], [2], []]
+        die = DeterministicDie()
+        assert die.roll() == 1
+        assert die.roll() == 2
+        assert die.roll() == 3
+        assert die.roll() == 4
+        assert die.roll() == 5
+        assert die.roll() == 6
+
+    def test_chosen_roll(self):
+        die = ChosenDie([1, 1, 2, 2, 3, 3])
+        assert die.roll() == 1
+        assert die.roll() == 1
+        assert die.roll() == 2
+        assert die.roll() == 2
+        assert die.roll() == 3
+        assert die.roll() == 3
+        assert die.roll() == 1
+        assert die.roll() == 1

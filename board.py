@@ -1,8 +1,9 @@
 from collections import Counter
 import random
 from typing import List
-
 from die import Die, RegularDie
+
+Move = tuple[int, int]  # (rolledNumber, columnPlayed)
 
 class Board:
     def __init__(self, die=Die()):
@@ -11,6 +12,7 @@ class Board:
         self.die = die
         self.turnNumber = 0
         self.rolledNum = self.die.roll()
+        self.winner = None
 
     def printBoardState(self) -> None:
         def constructRow(idx: int, colSet: List[List[int]]) -> str:
@@ -45,6 +47,21 @@ class Board:
                 score += 9 * elem
         return score
 
+
+    def getPlayerScores(self) -> tuple[int, int]:
+        """
+        Returns the current scores of the players in a tuple:
+        (Player A's score, Player B's score)
+        """
+        a_score = 0
+        b_score = 0
+        for col in self.a_cols:
+            a_score += self.getColumnScore(col)
+        for col in self.b_cols:
+            b_score += self.getColumnScore(col)
+        return (a_score, b_score)
+
+
     def makePlay(self, colNum: int) -> None:
         """
         plays the currently rolled die in given column index.
@@ -63,6 +80,7 @@ class Board:
         self.turnNumber += 1
         self.rolledNum = self.die.roll();
 
+
     def isGameDone(self) -> bool:
         if self.turnNumber % 2 == 0:
             total_len = sum([len(col) for col in self.b_cols])
@@ -74,6 +92,7 @@ class Board:
                 return True
 
         return False
+
 
     def legalColumns(self) -> List[int]:
         """

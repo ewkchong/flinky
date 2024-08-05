@@ -1,10 +1,12 @@
-from board import Board
+from board import Board, Move
 import random
 
 class Agent:
-    def play(self, b: Board) -> None:
-        # TODO: implement agent play
-        pass
+    def play(self, b: Board) -> Move:
+        rolledNum = b.rolledNum
+        decision = self.decide(b)
+        b.makePlay(decision)
+        return (rolledNum, decision)
 
     def decide(self, b: Board) -> int:
         """
