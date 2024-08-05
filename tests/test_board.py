@@ -1,5 +1,5 @@
 import pytest
-from main import Board
+from board import Board
 
 class TestColumnScore:
     def test_empty(self):
@@ -61,5 +61,3 @@ class TestIsGameDone:
             board.makePlay(1)
 
         assert not board.isGameDone()
-
-    # TODO: mock die roll to test true
