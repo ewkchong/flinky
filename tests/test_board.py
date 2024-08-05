@@ -1,5 +1,6 @@
 import pytest
 from board import Board
+from die import DeterministicDie
 
 class TestColumnScore:
     def test_empty(self):
@@ -61,3 +62,18 @@ class TestIsGameDone:
             board.makePlay(1)
 
         assert not board.isGameDone()
+
+    def test_game_done(self):
+        board = Board(die=DeterministicDie())
+        for _ in range(6):
+            board.makePlay(0)
+            assert not board.isGameDone()
+        for _ in range(6):
+            board.makePlay(1)
+            assert not board.isGameDone()
+        for _ in range(4):
+            board.makePlay(2)
+            assert not board.isGameDone()
+
+        board.makePlay(2)
+        assert board.isGameDone()

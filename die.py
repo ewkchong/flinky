@@ -13,12 +13,6 @@ class DeterministicDie(Die):
         self.rollCount = 0
 
     def roll(self) -> int:
-        mod = self.rollCount % 3
-        if mod == 0:
-            num = 1
-        elif mod == 1:
-            num = 2
-        else:
-            num = 3
+        mod = self.rollCount % 6
         self.rollCount += 1
-        return num
+        return mod + 1
