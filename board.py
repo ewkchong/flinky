@@ -2,12 +2,15 @@ from collections import Counter
 import random
 from typing import List
 
+from die import Die, RegularDie
+
 class Board:
-    def __init__(self):
+    def __init__(self, die=Die()):
         self.a_cols = [[], [], []]
         self.b_cols = [[], [], []]
+        self.die = die
         self.turnNumber = 0
-        self.rolledNum = 0
+        self.rolledNum = self.die.roll()
 
     def printBoardState(self) -> None:
         def constructRow(idx: int, colSet: List[List[int]]) -> str:
@@ -23,9 +26,6 @@ class Board:
         print('-------------')
         for i in range(3):
             print(constructRow(i, self.b_cols))
-
-    def rollDie(self) -> int:
-        return random.randint(1, 6)
 
     @staticmethod
     def getColumnScore(col: List[int]) -> int:
@@ -61,7 +61,7 @@ class Board:
             self.b_cols[colNum].append(num)
             self.a_cols[colNum] = list(filter(lambda x: x != num, self.a_cols[colNum]))
         self.turnNumber += 1
-        self.rolledNum = self.rollDie()
+        self.rolledNum = self.die.roll();
 
     def isGameDone(self) -> bool:
         if self.turnNumber % 2 == 0:
