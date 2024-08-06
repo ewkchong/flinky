@@ -2,6 +2,17 @@ import pytest
 from board import Board
 from die import ChosenDie, DeterministicDie
 
+class TestEvaluateMove:
+    def test_basic(self):
+        board = Board(die=ChosenDie([1,1,2,2]))
+        assert board.evaluateMove(0) == 1
+        board.makePlay(0)
+        assert board.evaluateMove(0) == 2
+        assert board.evaluateMove(1) == 1
+        board.makePlay(0)
+        assert board.evaluateMove(0) == 2
+
+
 class TestColumnScore:
     def test_empty(self):
         assert Board.getColumnScore([]) == 0

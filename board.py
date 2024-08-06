@@ -61,6 +61,34 @@ class Board:
             b_score += self.getColumnScore(col)
         return (a_score, b_score)
 
+    def evaluateMove(self, colNum: int) -> int:
+        """
+        Returns the change in score difference that would result from playing in column col.
+        Will only be called with legal columns
+        """
+        num = self.rolledNum
+        a_col = self.a_cols[colNum].copy()
+        b_col = self.b_cols[colNum].copy()
+        a_score = self.getColumnScore(a_col)
+        b_score = self.getColumnScore(b_col)
+        if self.turnNumber % 2 == 0:
+            # Add your number to the column
+            a_col.append(num)
+            # Destroy occurences on same number in opponents column
+            b_col = list(filter(lambda x: x != num, b_col))
+
+            new_a_score = self.getColumnScore(a_col)
+            new_b_score = self.getColumnScore(b_col)
+            return new_a_score - a_score - (new_b_score - b_score)
+        else:
+            # Player B
+            b_col.append(num)
+            a_col = list(filter(lambda x: x != num, a_col))
+
+            new_a_score = self.getColumnScore(a_col)
+            new_b_score = self.getColumnScore(b_col)
+            return new_b_score - b_score - (new_a_score - a_score)
+        return 0
 
     def makePlay(self, colNum: int) -> None:
         """

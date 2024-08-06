@@ -22,5 +22,11 @@ class RandomAgent(Agent):
 
 class GreedyAgent(Agent):
     def decide(self, b: Board) -> int:
-        # TODO: implement greedy strategy
-        return random.choice(b.legalColumns())
+        max_idx = 0
+        max_val = -1
+        for col in b.legalColumns():
+            val = b.evaluateMove(col)
+            if val > max_val:
+                max_val = val
+                max_idx = col
+        return max_idx
