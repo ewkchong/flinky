@@ -69,10 +69,15 @@ class Simulator:
     def multiProcessSimulate(self, a: Agent, b: Agent, n_games: int) -> tuple[int, int, int]:
         n_cpu = multiprocessing.cpu_count()
         future_results = []
+        divisions = [ n_games//n_cpu for _ in range(n_cpu) ]
+        remainder = n_games - (divisions[0] * n_cpu)
+        if remainder > 0:
+            divisions[-1] += remainder
+
         with concurrent.futures.ProcessPoolExecutor(max_workers=n_cpu) as executor:
             futures = []
-            for _ in range(n_cpu):
-                futures.append(executor.submit(self.simulateNGames, a=RandomAgent(), b=RandomAgent(), n_games=n_games//n_cpu))
+            for i in range(len(divisions)):
+                futures.append(executor.submit(self.simulateNGames, a=RandomAgent(), b=RandomAgent(), n_games=divisions[i]))
             for future in concurrent.futures.as_completed(futures):
                 future_results.append(future.result())
 
