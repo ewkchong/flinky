@@ -2,25 +2,25 @@ from simulator import Simulator
 from agents import GreedyAgent, RandomAgent
 import click
 
-implemented_agents = ['greedy', 'random']
-agent_map = {
+agents = {
     'greedy': GreedyAgent(),
     'random': RandomAgent()
 }
+
 @click.command()
 @click.option("-n", default=50000, help="Number of games to simulate")
 @click.option("-a",
                 default="greedy",
                 help="Agent A",
-                type=click.Choice(implemented_agents))
+                type=click.Choice(list(agents.keys())))
 @click.option("-b",
                 default="random",
                 help="Agent B",
-                type=click.Choice(implemented_agents))
+                type=click.Choice(list(agents.keys())))
 def simulate(n, a, b):
     sim = Simulator()
-    agent_a = agent_map[a]
-    agent_b = agent_map[b]
+    agent_a = agents[a]
+    agent_b = agents[b]
     a_wins, ties, b_wins = sim.simulateNGames(agent_a, agent_b, n_games=n)
 
     print(f"Results: A {a_wins} - {b_wins} B")
