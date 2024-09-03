@@ -61,6 +61,10 @@ class BoardEnv(Env):
 
         terminated = self.board.isGameDone()
 
+        if terminated:
+            a_score, b_score = self.board.getPlayerScores()
+            reward = (a_score - b_score) * 50
+
         # return step information (observation, reward, done, info)
         return observation, reward, terminated, False, info
 
