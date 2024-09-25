@@ -7,37 +7,35 @@ from agents import GreedyAgent
 from board import Board
 
 class BoardEnv(Env):
-    def __init(self):
+    def __init__(self):
         # Action space is choice between 3 columns
         self.action_space = Discrete(3)
 
         # Observation space is 6x3 grid, each possibly containing a dice value
         # Observation space also contains currently rolled dice value and whose turn it is
-        self.observation_space = spaces.Dict(
-            {
-                "roll": Discrete(6, start=1),
-                "turn": Discrete(2),
-                "board": Box(low=0, high=6, shape=(3,6))
-            }
-        )
+        self.observation_space = Box(low=0, high=6, shape=(20,))
 
         self.board = Board()
         self.opponent = GreedyAgent()
 
 
     def _get_column_obs(self):
-        return np.concatenate(
-            np.array(self.board.a_cols),
-            np.array(self.board.b_cols)
-        )
+        max_length = 3
+        padded_a_cols = [col + [0] * (max_length - len(col)) for col in self.board.a_cols]
+        padded_b_cols = [col + [0] * (max_length - len(col)) for col in self.board.b_cols]
+
+        obs = np.concatenate([
+            np.array(padded_a_cols),
+            np.array(padded_b_cols)
+        ])
+
+        return obs
 
     def _get_obs(self):
-        return {
-            "roll": self.board.rolledNum,
-            "turn": self.board.turnNumber % 2,
-            "board": self._get_column_obs()
-        }
-
+        roll = np.array([self.board.rolledNum])
+        turn = np.array([self.board.turnNumber % 2])
+        board = self._get_column_obs().flatten()
+        return np.concatenate((roll, turn, board))
 
     def _get_info(self):
         return {
@@ -46,14 +44,22 @@ class BoardEnv(Env):
 
     def step(self, action):
         # Get reward
-        reward = self.board.evaluateMove(action)
+        # self.board.printBoardState()
+        # reward = self.board.evaluateMove(action) * 0.4
+        reward = 0
 
         # Apply action
+        rolledNum = self.board.rolledNum
         self.board.makePlay(action)
+
+        # print(f"Turn {self.board.turnNumber}: Agent played {rolledNum} in column {action + 1}")
         terminated = self.board.isGameDone()
 
         if not terminated:
+            rolledNum = self.board.rolledNum
             self.opponent.play(self.board)
+            # print(f"Turn {self.board.turnNumber}: Opponent plays {rolledNum}")
+            # self.board.printBoardState()
 
         # Get observation and info
         observation = self._get_obs()
@@ -63,7 +69,15 @@ class BoardEnv(Env):
 
         if terminated:
             a_score, b_score = self.board.getPlayerScores()
-            reward = (a_score - b_score) * 50
+            if a_score > b_score:
+                reward = 1
+            elif a_score < b_score:
+                reward = -1
+            else:
+                reward = 0
+            # self.board.printBoardState()
+
+            # print(f"Game over! Player A: {a_score}, Player B: {b_score}")
 
         # return step information (observation, reward, done, info)
         return observation, reward, terminated, False, info

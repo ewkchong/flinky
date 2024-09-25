@@ -66,7 +66,7 @@ class Simulator:
             if i % 2 == 0:
                 a_first = True
             else:
-                a_first = False
+                a_first = True
             result: GameResult = self.simulateGame(a, b, a_first)
             a_score, b_score = result['scores']
             if a_score > b_score:
