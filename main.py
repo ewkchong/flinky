@@ -14,7 +14,7 @@ agents = {
                 help="Agent A",
                 type=click.Choice(list(agents.keys())))
 @click.option("-b",
-                default="random",
+                default="greedy",
                 help="Agent B",
                 type=click.Choice(list(agents.keys())))
 def simulate(n, a, b):
@@ -24,8 +24,7 @@ def simulate(n, a, b):
     a_wins, ties, b_wins = sim.simulateNGames(agent_a, agent_b, n_games=n)
 
     print(f"Results: A {a_wins} - {b_wins} B")
-    print(f"A win rate: {"{:.2f}".format(a_wins / (a_wins + b_wins) * 100)}%")
-
+    print(f"A win rate: {'{:.2f}'.format(a_wins / (a_wins + b_wins) * 100)}%")
 
 if __name__ == "__main__":
     simulate()

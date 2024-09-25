@@ -6,7 +6,7 @@ from die import Die, RegularDie
 Move = tuple[int, int]  # (rolledNumber, columnPlayed)
 
 class Board:
-    def __init__(self, die=Die()):
+    def __init__(self, die=RegularDie()):
         self.a_cols = [[], [], []]
         self.b_cols = [[], [], []]
         self.die = die
@@ -23,11 +23,13 @@ class Board:
             row_str = list(map(lambda x: str(x) if x != -1 else " ", row))
             return f"| {row_str[0]} | {row_str[1]} | {row_str[2]} |"
 
+        print('-------------')
         for i in range(3):
             print(constructRow(i, self.a_cols))
         print('-------------')
         for i in range(3):
             print(constructRow(i, self.b_cols))
+        print('-------------\n')
 
     @staticmethod
     def getColumnScore(col: List[int]) -> int:
